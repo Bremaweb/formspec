@@ -77,7 +77,7 @@ form:show(player)
 
 ###Field
 ####Parameters
-- name (required): Sets the field name used in register_on_player_received_fields.
+- **name** (required): Sets the field name used in register_on_player_received_fields.
 - **top**: Sets the vertical position of the element. If not set the element will be automatically positioned in the form.
 - **left**: Sets the horizontal position of the element. If not set the element will be automatically positioned in the form.
 - **width**: Sets the width of the inventory. *Default 5*
@@ -87,7 +87,7 @@ form:show(player)
 
 ###Password
 ####Parameters
-- name (required): Sets the field name used in register_on_player_received_fields.
+- **name** (required): Sets the field name used in register_on_player_received_fields.
 - **top**: Sets the vertical position of the element. If not set the element will be automatically positioned in the form.
 - **left**: Sets the horizontal position of the element. If not set the element will be automatically positioned in the form.
 - **width**: Sets the width of the inventory. *Default 5*
@@ -96,7 +96,7 @@ form:show(player)
 
 ###TextArea
 ####Parameters
-- name (required): Sets the field name used in register_on_player_received_fields.
+- **name** (required): Sets the field name used in register_on_player_received_fields.
 - **top**: Sets the vertical position of the element. If not set the element will be automatically positioned in the form.
 - **left**: Sets the horizontal position of the element. If not set the element will be automatically positioned in the form.
 - **width**: Sets the width of the inventory. *Default 5*
@@ -117,7 +117,7 @@ All of the buttons are included in this one object except item_image_button. The
 a button_exit, setting the image parameters make it an image_button. Setting both exit and image makes it an image_button_exit.
 
 ####Parameters
-- name (required): Sets the field name used in register_on_player_received_fields.
+- **name** (required): Sets the field name used in register_on_player_received_fields.
 - **top**: Sets the vertical position of the element. If not set the element will be automatically positioned in the form.
 - **left**: Sets the horizontal position of the element. If not set the element will be automatically positioned in the form.
 - **width**: Sets the width of the inventory. *Default 3*
