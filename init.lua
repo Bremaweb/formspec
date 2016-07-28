@@ -21,6 +21,7 @@ Element = class(function(a,d)
 		a.destroy_on_exit = d.destroy_on_exit
 		a.player = d.player
 		a.exit = d.exit
+		a.inv = d.inv
 	else
 		a.padding_top = 0
 	end	
@@ -166,6 +167,8 @@ end)
 TextArea = class(Element,function(c,def)
 	Element.init(c,def)	
 	c.format = "textarea[{left},{top};{width},{height};{name};{label};{default}]"
+	c.width = c.width or 5
+	c.height = c.height or 2
 end)
 
 -- LABEL
@@ -206,7 +209,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		end
 	end
 end)
-
+--[[
 function formspec_test(player)
 	local form = FormSpec({name="dialog"})
 	form.callback = function(self,player,fields)
@@ -227,3 +230,4 @@ end
 minetest.register_on_joinplayer(function(player)
 	minetest.after(3,formspec_test,player)
 end)
+]]
