@@ -22,6 +22,7 @@ Element = class(function(a,d)
 		a.player = d.player
 		a.exit = d.exit
 		a.inv = d.inv
+		a.list = d.list
 		a.vertical = d.vertical
 		a.selected = d.selected
 		a.dropdown = d.dropdown
@@ -85,10 +86,13 @@ function FormSpec:add(element)
 	if element.left == nil then
 		element.left = 0.25
 	end
+		
+	if ( element.top + element.height ) > self.elements_height then
+		self.elements_height = ( element.top + element.height )
+	end
 	
-	self.elements_height = self.elements_height + element.height
-	if element.width > self.elements_width then
-		self.elements_width = element.width
+	if ( element.left + element.width ) > self.elements_width then
+		self.elements_width = ( element.left + element.width )
 	end
 	
 	--TODO ALIGNMENTS
@@ -131,8 +135,8 @@ end)
 -- LIST
 List = class(Element,function(c,def)
 	Element.init(c,def)
-	c.format = "list[{inv};{list};{left},{top};{width},{height};{starting_index}"
-	c.starting_index = c.starting_index or 1
+	c.format = "list[{inv};{list};{left},{top};{width},{height};{starting_index}]"
+	--c.starting_index = c.starting_index or 1
 	c.height = c.height or 1
 	c.width = c.width or 1
 end)
@@ -255,20 +259,12 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 end)
 --[[
 function formspec_test(player)
-	local form = FormSpec({name="dialog"})
-	form.callback = function(self,player,fields)
-		if fields.chat then
-			minetest.chat_send_player(player:get_player_name(),fields.txt)
-		end
-	end
-	
-	local txt = Field({name="txt",label="Enter Text"})
-	local button = Button({name="chat",label="Chat"})
-	local button2 = Button({exit=true,name="exit",label="Close"})
-	form:add(txt)
-	form:add(button)
-	form:add(button2)
-	form:show(player)
+	local form = FormSpec({name="minecraft_inventory"})
+	form:add(Image({left=1,top=0.6,width=1,height=2,texture="player.png"}))
+	form:add(PlayerInventory({left=0,top=3.5}))
+	form:add(CraftInventory({left=3,top=0}))
+	form:add(List({inv="current_player",list="craftpreview",left=7,top=1}))
+	form:show(player:get_player_name())	
 end
 
 minetest.register_on_joinplayer(function(player)

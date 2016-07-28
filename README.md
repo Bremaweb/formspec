@@ -31,6 +31,24 @@ form:add(button2)
 form:show(player)
 ```
 
+**Minecraft Style Inventory**
+```lua
+local form = FormSpec({name="minecraft_inventory"})
+form:add(Image({left=1,top=0.6,width=1,height=2,texture="player.png"}))
+form:add(PlayerInventory({left=0,top=3.5}))
+form:add(CraftInventory({left=3,top=0}))
+form:add(List({inv="current_player",list="craftpreview",left=7,top=1}))
+form:show(player:get_player_name())
+
+--[[OLD FORMSPEC WAY
+size[8,7.5;]
+image[1,0.6;1,2;player.png]
+list[current_player;main;0,3.5;8,4;]
+list[current_player;craft;3,0;3,3;]
+list[current_player;craftpreview;7,1;1,1;]
+]]
+```
+
 ###FormSpec
 ####Parameters
 - **name** (required): The name of the formspec used in register_on_player_received_fields. This must be set when the FormSpec is created.
