@@ -3,7 +3,9 @@ This framework assists in making formspecs for Minetest. Hopefully this will mak
 
 ##Objects
 Basic usage: `local variable = Object({parameters})`
+
 All parameters can be set after creation (e.g. `variable.width = 8`), the only exception is the FormSpec name, it must be set when the
+
 FormSpec is created (e.g. `local form = FormSpec({name='myform'})`)
 
 ##Examples
