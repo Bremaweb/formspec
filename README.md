@@ -38,8 +38,8 @@ form:show(player)
 - destroy_on_exit (true/false): If true the form will be set to nil after it exits. *Default true*
 
 ####Methods
-add(object): Adds an object to the form
-show(player_name): Shows the form to the player.
+- add(object): Adds an object to the form
+- show(player_name): Shows the form to the player.
 
 ###PlayerInventory
 ####Parameters
