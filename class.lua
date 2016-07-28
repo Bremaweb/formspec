@@ -1,3 +1,4 @@
+--http://lua-users.org/wiki/SimpleLuaClasses
 if class == nil then
 	function class(base, init)
 	   local c = {}    -- a new class instance
