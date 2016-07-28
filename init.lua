@@ -1,46 +1,31 @@
 dofile(minetest.get_modpath("formspec").."/class.lua")
 
 _FORMSPECS = { }
---[[ SETUP FORMSPEC CLASS ]]--
-ALIGN_CENTER = 0
-ALIGN_LEFT = 1
-ALIGN_RIGHT = 2
-ALIGN_TOP = 3
-ALIGN_BOTTOM = 4
 
 --[[ BASIC PROPERTIES FOR ALL ELEMENTS ]]--
 Element = class(function(a,d)
 	if d ~= nil then
-		a.name = d.name or a.name
-		a.height = d.height or a.height
-		a.width = d.width or a.width
-		a.top = d.top or a.top
-		a.left = d.left or a.left
-		a.format = d.format or a.format
-		a.label = d.label or a.label
-		a.default = d.default or a.default
-		a.starting_index = d.starting_index or a.starting_index
-		a.texture = d.texture or a.texture
-		a.padding_top = ( d.padding_top or a.padding_top ) or 0
+		a.name = d.name
+		a.height = d.height
+		a.width = d.width
+		a.top = d.top
+		a.left = d.left
+		a.format = d.format
+		a.label = d.label
+		a.default = d.default
+		a.starting_index = d.starting_index
+		a.texture = d.texture
+		a.image = d.image
+		a.padding_top = d.padding_top or 0
 		a.callback = d.callback
+		a.destroy_on_exit = d.destroy_on_exit
+		a.player = d.player
+		a.exit = d.exit
 	else
-		d = {}
 		a.padding_top = 0
 	end	
 end)
---[[
-function Element:new(name,height,width,top,left)
-	if name ~= nil then
-		self.name = name
-	end
-	self:size(height,width)
-	self:position(top,left)
-	local o = {}
-	setmetatable(o, self)
-	self.__index = self
-	return o
-end
-]]
+
 function Element:size(height,width)
 	if height ~= nil then
 		self.height = height
@@ -60,16 +45,14 @@ function Element:position(top,left)
 end
 
 function Element:render()
-	print("render() "..tostring(self.name))
 	local s = self.format
 	local ss = self
-	print("start: "..s)
 	for k,v in pairs(ss) do
-		print("key: "..tostring(k).."   value: "..tostring(v))
-		s = string.gsub(s,"{("..k..")}",v)
+		if type(v) == "string" or type(v) == "number" then
+			s = string.gsub(s,"{("..k..")}",v)
+		end
 	end
 	s = string.gsub(s,"{(.*)}","")	-- remove any extra template fields
-	print("final: "..s)
 	return s 
 end
 
@@ -77,16 +60,18 @@ FormSpec = class(Element,function(c,def)
 	Element.init(c,def)
 	c.format = "size[{width},{height}]{elements}"
 	c.elements = ""
-	c.callback = c.callback or function ()
-		print("inherited callback")
-	end
 	c.current_row = 0
 	c.elements_height = 0
 	c.elements_width = 0
+	if c.name ~= nil then
+		_FORMSPECS[c.name] = c
+	else
+		minetest.log("warning","Creating a FormSpec without a name may cause the callback to fail")
+	end
+	c.destroy_on_exit = c.destroy_on_exit or true
 end)
 
 function FormSpec:add(element)
-	print("FormSpec:add")
 	-- this is where we'll do the centering and stuff
 	if element.top == nil then
 		element.top = self.current_row + element.padding_top
@@ -108,6 +93,9 @@ function FormSpec:add(element)
 end
 
 function FormSpec:show(playername)
+	if type(playername) == "userdata" then
+		playername = playername:get_player_name()
+	end
 	if self.height == nil or self.height == 0 then
 		self.height = self.elements_height + 0.25
 	end
@@ -191,27 +179,51 @@ end)
 --BUTTON
 Button = class(Element,function(c,def)
 	Element.init(c,def)
-	c.format = "button[{left},{top};{width},{height};{name};{label}]"
+	local f = ""
+	local f_end = "{name};{label}]"
+	local f_mid = "" 
+	if c.image ~= nil then
+		f = "image_"
+		f_mid = "image;"
+	end
+	f = f .. "button"
+	if c.exit ~= nil then
+		f = f .. "_exit"
+	end	
+	c.format = f .. "[{left},{top};{width},{height};" ..f_mid..f_end
 	c.height = c.height or 1
 	c.width = c.width or 3
 end)
 
---BUTTON EXIT
-ButtonExit = class(Element,function(c,def)
-	Element.init(c,def)
-	c.format = "button_exit[{left},{top};{width},{height};{name};{label}]"
-	c.height = c.height or 1
-	c.width = c.width or 3
+minetest.register_on_player_receive_fields(function(player, formname, fields)
+	if _FORMSPECS[formname] ~= nil then
+		if _FORMSPECS[formname].callback ~= nil then
+			assert(type(_FORMSPECS[formname].callback) == "function","FormSpec.callback must be a function")
+			_FORMSPECS[formname]:callback(player,fields)
+			if fields.quit == "true" and _FORMSPECS[formname].destroy_on_exit then
+				_FORMSPECS[formname] = nil
+			end
+		end
+	end
 end)
-
-
 
 function formspec_test(player)
 	local form = FormSpec({name="dialog"})
-	local textarea = TextArea({width=12,height=5,name="Message",default="This is the message in this textarea"})
-	local button = ButtonExit({label="OK"})
+	form.callback = function(self,player,fields)
+		if fields.chat then
+			minetest.chat_send_player(player:get_player_name(),fields.txt)
+		end
+	end
 	
-	form:add(textarea)
+	local txt = Field({name="txt",label="Enter Text"})
+	local button = Button({name="chat",label="Chat"})
+	local button2 = Button({exit=true,name="exit",label="Close"})
+	form:add(txt)
 	form:add(button)
-	form:show(player:get_player_name())
+	form:add(button2)
+	form:show(player)
 end
+
+minetest.register_on_joinplayer(function(player)
+	minetest.after(3,formspec_test,player)
+end)
