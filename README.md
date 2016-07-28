@@ -10,7 +10,7 @@ FormSpec is created (e.g. `local form = FormSpec({name='myform'})`)
 
 This creates a simple dialog with a Field you can type and two buttons, one labeled Chat and the other Labeled Close. When you type in the
 field and click Chat the text is sent to you in minetest.chat_send_player, when you click Close the form is closed.
-```
+```Lua
 -- Setup the form
 local form = FormSpec({name="dialog"})
 form.callback = function(self,player,fields)
