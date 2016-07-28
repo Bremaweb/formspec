@@ -126,6 +126,33 @@ a button_exit, setting the image parameters make it an image_button. Setting bot
 - **exit**: Makes the button close the form.
 - **image**: Makes the button an image button.
 
+###TextList
+The TextList object encompasses drop downs and the normal formspec text lists.
+
+####Parameters
+- **name** (required): Sets the field name used in register_on_player_received_fields.
+- **top**: Sets the vertical position of the element. If not set the element will be automatically positioned in the form.
+- **left**: Sets the horizontal position of the element. If not set the element will be automatically positioned in the form.
+- **width**: Sets the width of the inventory. *Default 5*
+- **height**: Sets the height of the inventory. *Default 3* for text list *Default 1* for drop downs
+- **dropdown**: If dropdown is set it becomes a dropdown box
+- **selected**: The index number of the selected item.
+
+####Methods
+- **addItem(item)**: Adds an item to the TextList. You can add a comma separated list (e.g. `TextList:addItem('item1,item2,item3')`).
+
+###Background
+Adds a background to the formspec
+
+####Parameters
+- **top**: Sets the vertical position of the element. *Default 0*
+- **left**: Sets the horizontal position of the element. *Default 0*
+- **width**: Sets the width of the inventory. *Default 1*
+- **height**: Sets the height of the inventory. *Default 1*
+- **texture**: The image that should be used for the background
+
+ 
+
 
 
 

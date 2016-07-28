@@ -22,6 +22,10 @@ Element = class(function(a,d)
 		a.player = d.player
 		a.exit = d.exit
 		a.inv = d.inv
+		a.vertical = d.vertical
+		a.selected = d.selected
+		a.dropdown = d.dropdown
+		a.auto_clip = d.auto_clip
 	else
 		a.padding_top = 0
 	end	
@@ -174,7 +178,11 @@ end)
 -- LABEL
 Label = class(Element,function(c,def)
 	Element.init(c,def)
-	c.format = "label[{left},{top};{label}]"
+	if c.vertical ~= nil then
+		c.format = "vertlabel[{left},{top};{label}]"
+	else
+		c.format = "label[{left},{top};{label}]"
+	end
 	c.height = c.height or 1
 	c.width = c.width or 0
 end)
@@ -196,6 +204,42 @@ Button = class(Element,function(c,def)
 	c.format = f .. "[{left},{top};{width},{height};" ..f_mid..f_end
 	c.height = c.height or 1
 	c.width = c.width or 3
+end)
+
+TextList = class(Element,function(c,def)
+	Element.init(c,def)
+	if c.dropdown then
+		c.format = "dropdown"
+		c.height = c.height or 1
+	else
+		c.format = "textlist"
+		c.height = c.height or 3
+	end
+	c.format = c.format .. "[{left},{top};{width},{height};{name};{list_items};{selected}"
+	if c.dropdown == nil then
+		c.format = c.format .. ";{transparent}"
+	end
+	c.format = c.format .. "]"	
+	c.list_items = ""
+	c.width = c.width or 5
+end)
+
+function TextList:addItem(item)
+	if self.list_items ~= "" then
+		self.list_items = self.list_items .. ","
+	end
+	
+	self.list_items = self.list_items .. item
+end
+
+Background = class(Element,function(c,def)
+	Element.init(c,def)
+	c.format = "background[{left},{top};{width},{height};{texture};{auto_clip}]"
+	c.auto_clip = c.auto_clip or false
+	c.top = c.top or 0
+	c.left = c.left or 0
+	c.width = c.width or 1
+	c.height = c.height or 1
 end)
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
