@@ -187,7 +187,7 @@ Label = class(Element,function(c,def)
 	else
 		c.format = "label[{left},{top};{label}]"
 	end
-	c.height = c.height or 1
+	c.height = c.height or 0.6
 	c.width = c.width or 0
 end)
 
@@ -246,6 +246,17 @@ Background = class(Element,function(c,def)
 	c.height = c.height or 1
 end)
 
+function Dialog(form_name,text,button_label)
+	local form = FormSpec({name=form_name})
+	while string.len(text) > 0 do
+		local ltext = string.sub(text,1,75)
+		form:add(Label({label=ltext,width=9}))
+		text = string.sub(text,76)
+	end
+	form:add(Button({name="button_"..form_name,label=button_label,exit=true,left=3}))
+	return form
+end
+
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if _FORMSPECS[formname] ~= nil then
 		if _FORMSPECS[formname].callback ~= nil then
@@ -257,17 +268,12 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		end
 	end
 end)
---[[
+
 function formspec_test(player)
-	local form = FormSpec({name="minecraft_inventory"})
-	form:add(Image({left=1,top=0.6,width=1,height=2,texture="player.png"}))
-	form:add(PlayerInventory({left=0,top=3.5}))
-	form:add(CraftInventory({left=3,top=0}))
-	form:add(List({inv="current_player",list="craftpreview",left=7,top=1}))
-	form:show(player:get_player_name())	
+	local d = Dialog("dialog","This is a long text string for this dialog box. I want to see if it splits correctly. I don't know if this is 80 characters long or not","Ok")
+	d:show(player:get_player_name())	
 end
 
 minetest.register_on_joinplayer(function(player)
 	minetest.after(3,formspec_test,player)
 end)
-]]
