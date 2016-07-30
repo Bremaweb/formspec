@@ -249,14 +249,14 @@ end)
 function Dialog(form_name,text,button_label)
 	local form = FormSpec({name=form_name})
 	while string.len(text) > 0 do		
-		local ltext = string.sub(text,1,75)
+		local ltext = string.sub(text,1,70)
 		-- break string on a space if the string is the full 75 characters long
 		local lastspace = string.find(ltext," ",-10)
-		if lastspace ~= nil and string.len(ltext) == 75 then
-			ltext = string.sub(ltext,1,lastspace)
+		if lastspace ~= nil and string.len(ltext) == 70 then
+			ltext = string.sub(ltext,1,(lastspace-1))
 		end
 		form:add(Label({label=ltext,width=9}))
-		text = string.sub(text,(string.len(ltext)+1))
+		text = string.sub(text,(string.len(ltext)))
 	end
 	form:add(Button({name="button_"..form_name,label=button_label,exit=true,left=3}))
 	return form
