@@ -261,7 +261,7 @@ function Dialog(form_name,text,button_label)
 	form:add(Button({name="button_"..form_name,label=button_label,exit=true,left=3}))
 	return form
 end
-
+--[[
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if _FORMSPECS[formname] ~= nil then
 		if _FORMSPECS[formname].callback ~= nil then
@@ -282,3 +282,4 @@ end
 minetest.register_on_joinplayer(function(player)
 	minetest.after(3,formspec_test,player)
 end)
+]]
