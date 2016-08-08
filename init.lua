@@ -261,7 +261,7 @@ function Dialog(form_name,text,button_label)
 	form:add(Button({name="button_"..form_name,label=button_label,exit=true,left=3}))
 	return form
 end
---[[
+
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if _FORMSPECS[formname] ~= nil then
 		if _FORMSPECS[formname].callback ~= nil then
@@ -274,6 +274,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 end)
 
+--[[
 function formspec_test(player)
 	local d = Dialog("dialog","This is a long text string for this dialog box. I want to see if it splits correctly. I don't know if this is 80 characters long or not","Ok")
 	d:show(player:get_player_name())	
