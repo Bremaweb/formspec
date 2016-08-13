@@ -27,6 +27,7 @@ Element = class(function(a,d)
 		a.selected = d.selected
 		a.dropdown = d.dropdown
 		a.auto_clip = d.auto_clip
+		a.item_name = d.item_name
 	else
 		a.padding_top = 0
 	end	
@@ -80,14 +81,13 @@ end)
 function FormSpec:add(element)
 	-- this is where we'll do the centering and stuff
 	if element.top == nil then
-		element.top = self.current_row + element.padding_top
-		self.current_row = self.current_row + element.height + element.padding_top
+		element.top = self.elements_height + element.padding_top
 	end
 	if element.left == nil then
 		element.left = 0.25
 	end
 		
-	if ( element.top + element.height ) > self.elements_height then
+	if ( element.top + element.height + element.padding_top ) > self.elements_height then
 		self.elements_height = ( element.top + element.height )
 	end
 	
@@ -210,6 +210,13 @@ Button = class(Element,function(c,def)
 	c.width = c.width or 3
 end)
 
+ItemButton = class(Element,function(c,def)
+	Element.init(c,def)
+	c.format = "item_image_button[{left},{top};{width},{height};{item_name};{name};{label}]"
+	c.height = c.height or 1
+	c.width = c.width or 1
+end)
+
 TextList = class(Element,function(c,def)
 	Element.init(c,def)
 	if c.dropdown then
@@ -266,7 +273,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if _FORMSPECS[formname] ~= nil then
 		if _FORMSPECS[formname].callback ~= nil then
 			assert(type(_FORMSPECS[formname].callback) == "function","FormSpec.callback must be a function")
-			_FORMSPECS[formname]:callback(player,fields)
+			_FORMSPECS[formname].callback(player,fields)
 			if fields.quit == "true" and _FORMSPECS[formname].destroy_on_exit then
 				_FORMSPECS[formname] = nil
 			end
