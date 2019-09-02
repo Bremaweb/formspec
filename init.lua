@@ -98,7 +98,7 @@ function FormSpec:add(element)
 	--TODO ALIGNMENTS
 	local r = element:render()
 	self.elements = self.elements .. r
-	--print(self.elements)
+	----print(self.elements)
 end
 
 function FormSpec:show(playername)
